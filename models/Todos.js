@@ -5,8 +5,8 @@ var mongoose = require ('mongoose');
 
 var todoSchema = new mongoose.Schema({
 
-    content : String
-    //isDone: Boolean
+    content : String,
+    isDone: Boolean
 
 
 })

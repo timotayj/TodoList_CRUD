@@ -16,7 +16,33 @@ router.use(methodOverride(function(req, res){
     return method
   }
 }))
+router.param('id', function(req, res, next, id) {
+  //console.log('validating ' + id + ' exists');
+  //find the ID in the Database
+  mongoose.model('Todos').findById(id, function (err, todo) {
+    //if it isn't found, we are going to repond with 404
+    if (err) {
+      console.log(id + ' was not found');
+      res.status(404)
+      var err = new Error('Not Found');
+      err.status = 404;
+      res.format({
+        html: function(){
+          next(err);
+        },
+        json: function(){
+          res.json({message : err.status  + ' ' + err});
+        }
+      });
 
+    } else {
+
+      req.id = id;
+
+      next();
+    }
+  });
+});
 
 
 router.route('/')
@@ -46,9 +72,13 @@ router.route('/')
 
 
 
+
+
+
+
     .post(function (req, res) {
 
-      new Todos({content: req.body.newContent})
+      new Todos({content: req.body.newContent, isDone: false})
           .save(function (err, newContent) {
 
             if(err){
@@ -60,7 +90,33 @@ router.route('/')
           });
 
 
-    });
+    })
+
+    .put(function(req,res){
+          mongoose.model('Todos').findById(req.id, function(err, todo){
+            todo.update({
+              isDone: completed
+
+            },function(err,todo){
+              if(err){
+                res.send('error updating')
+              }else{
+                res.redirect('/')
+              }
+
+
+            });
+
+
+
+          })
+
+
+
+    })
+
+
+
 
 
 

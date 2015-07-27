@@ -4,10 +4,17 @@ block content
 
     p test
         ul
+
             each k, i in Todos
-                li
-                =k.content
-                =k._id
+                if(k.isDone == false)
+                    li
+                    =k.content
+                    =k._id
+                    = k.isDone
+                    form(action ='/', method ='PUT')
+                    input#completed(type = 'hidden', name ='completed', clicked=('#{Todos.isDone}' === 'true'))
+                    button(type='submit', ).
+                            Done!
 
 
 
@@ -16,6 +23,7 @@ block content
 
     form(action = '/', method = 'post')
         input.form-control(type = 'text', name = 'newContent', placeholder='Enter new task')
+
         button(type = 'submit').
             Submit
 
